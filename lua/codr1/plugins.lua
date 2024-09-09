@@ -8,6 +8,36 @@ local plugins = {
         end,
     },
 
+    -- cmp is already included by NVChad.  However I really wanted to change the default key bindings.
+    --   and apparenctly this is how you do it.  https://github.com/NvChad/NvChad/discussions/2832
+    {
+        "hrsh7th/nvim-cmp",
+        opts = function()
+            local cmp = require "cmp"
+            local conf = require "nvchad.configs.cmp"
+            --cmp.setup {
+            --    mapping = {
+            --       sources = cmp.config.sources {
+            --            { name = "nvimai_cmp_source" }, -- This is optional but recommended
+            --        },
+            --    },
+            --}
+            conf.mapping = {
+                -- this little section is just for nvim.ai
+                --sources = cmp.config.sources {
+                --    { name = "nvimai_cmp_source" }, -- This is optional but recommended
+                --},
+                ["<Up>"] = cmp.mapping.select_prev_item(),
+                ["<Down>"] = cmp.mapping.select_next_item(),
+                ["<Enter>"] = cmp.mapping.confirm {
+                    behavior = cmp.ConfirmBehavior.Replace,
+                    select = true,
+                },
+            }
+            return conf
+        end,
+    },
+
     -- Glow - Markdown preview - https://github.com/ellisonleao/glow.nvim
     {
         "ellisonleao/glow.nvim",
@@ -35,6 +65,31 @@ local plugins = {
     -- Custom cmp config to add arrow keymaps
     {},
 
+    -- nvim.ai
+    {
+        "magicalne/nvim.ai",
+        lazy = false,
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-treesitter/nvim-treesitter",
+        },
+        config = function()
+            local api_key = os.getenv "ANTHROPIC_API_KEY"
+            local opts = {
+                provider = "anthropic", -- You can configure your provider, model or keymaps here.
+                anthropic = {
+                    max_tokens = 100000,
+                },
+                ANTHROPIC_API_KEY = api_key,
+                keymaps = {
+                    toggle = "<leader>ac", -- Toggle chat dialog
+                    inline_assist = "<leader>ai", -- Run InlineAssist command with prompt
+                },
+            }
+            require("ai").setup(opts)
+        end,
+    },
+
     -- ChatGPT
     {
         "jackMort/ChatGPT.nvim",
@@ -53,7 +108,7 @@ local plugins = {
         end,
     },
 
-    -- Claude.vim
+    -- Claude.vimz
     {
         "pasky/claude.vim",
         lazy = false,
@@ -103,7 +158,10 @@ local plugins = {
     -- remember.nvim - restore cursor position
     {
         "vladdoster/remember.nvim",
-        config = [[ require('remember') ]],
+        lazy = false,
+        config = function()
+            require("remember").setup {}
+        end,
     },
 }
 return plugins

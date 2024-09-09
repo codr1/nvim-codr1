@@ -18,7 +18,7 @@ local servers = {
     "jsonls",
     "lua_ls",
     "sqls",
-    "tsserver",
+    "ts_ls",
 }
 local nvlsp = require "nvchad.configs.lspconfig"
 
@@ -48,7 +48,7 @@ lspconfig.pylsp.setup {
 }
 
 -- configuring single server, example: typescript
--- lspconfig.tsserver.setup {
+-- lspconfig.ts_ls.setup {
 --   on_attach = nvlsp.on_attach,
 --   on_init = nvlsp.on_init,
 --   capabilities = nvlsp.capabilities,
