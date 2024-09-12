@@ -14,14 +14,17 @@ local options = {
         yaml = { "prettier" },
     },
     formatters = {
+        black = {
+            prepend_args = { "--line-length", "120" },
+        },
+        clang_format = {
+            prepend_args = { "-style=file:~/.config/nvim/codr1/formatter_configs/.clang-format" },
+        },
         eslint_d = {
             prepend_args = {
                 "--config",
                 vim.fn.expand "~/.config/nvim/codr1/formatter_configs/eslint.config.js",
             },
-        },
-        clang_format = {
-            prepend_args = { "-style=file:~/.config/nvim/codr1/formatter_configs/.clang-format" },
         },
     },
 }
