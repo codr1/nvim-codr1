@@ -6,6 +6,7 @@ local on_init = configs.on_init
 local capabilities = configs.capabilities
 
 local lspconfig = require "lspconfig"
+local util = require "lspconfig/util"
 
 -- EXAMPLE
 local servers = {
@@ -30,6 +31,25 @@ for _, lsp in ipairs(servers) do
         capabilities = nvlsp.capabilities,
     }
 end
+
+-- Custom setup for gopls
+lspconfig.gopls.setup {
+    on_attach = nvlsp.on_attach,
+    on_init = nvlsp.on_init,
+    capabilities = nvlsp.capabilities,
+    cmd = { "gopls" },
+    filetypes = { "go", "gomod", "gowork", ".git" },
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+        gopls = {
+            completeUnimported = true,
+            usePlaceholders = true,
+            analyses = {
+                unusedparam = true,
+            },
+        },
+    },
+}
 
 -- Custom setup for pylsp
 lspconfig.pylsp.setup {

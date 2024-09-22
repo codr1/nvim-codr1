@@ -6,6 +6,7 @@ local options = {
         typescriptreact = { "eslint_d" },
         c = { "clang_format" },
         cpp = { "clang_format" },
+        go = { "goimports-reviser", "golines" },
         python = { "black", "isort" },
         json = { "prettier" },
         lua = { "stylua" },
@@ -25,6 +26,9 @@ local options = {
                 "--config",
                 vim.fn.expand "~/.config/nvim/codr1/formatter_configs/eslint.config.js",
             },
+        },
+        golines = {
+            prepend_args = { "-m", "120", "-t", "4" },
         },
     },
 }

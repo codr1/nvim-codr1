@@ -8,6 +8,17 @@ local plugins = {
         end,
     },
 
+    -- Mason is alrady inlcuded by NVChad.  However we want to add an ensure_installed clause so that
+    -- it loads our favorite packages every time we pull this config on a new system, and we don't have
+    -- to walk through the tUI by hand to install them
+    {
+        "williamboman/mason.nvim",
+        opts = {
+            -- Serves that are set up via lspconfig should be automatically installed
+            automatic_installation = true,
+        },
+    },
+
     -- cmp is already included by NVChad.  However I really wanted to change the default key bindings.
     --   and apparenctly this is how you do it.  https://github.com/NvChad/NvChad/discussions/2832
     {
@@ -60,6 +71,21 @@ local plugins = {
         dependencies = {
             "tpope/vim-fugitive",
         },
+    },
+
+    -- remember.nvim - restore cursor position
+    {
+        "vladdoster/remember.nvim",
+        lazy = false,
+        config = function()
+            require("remember").setup {}
+        end,
+    },
+
+    -- undotree - awesome undo manager
+    {
+        "mbbill/undotree",
+        lazy = false,
     },
 
     -- Custom cmp config to add arrow keymaps
@@ -152,15 +178,6 @@ local plugins = {
             require("gp").setup(conf)
 
             -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
-        end,
-    },
-
-    -- remember.nvim - restore cursor position
-    {
-        "vladdoster/remember.nvim",
-        lazy = false,
-        config = function()
-            require("remember").setup {}
         end,
     },
 }
