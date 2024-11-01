@@ -63,6 +63,21 @@ local plugins = {
         end,
     },
 
+    {
+        "tpope/vim-fugitive",
+        event = "VeryLazy",
+        config = function()
+            -- Key mappings for common Fugitive commands
+            vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
+            vim.keymap.set("n", "<leader>gw", ":Gwrite<CR>")
+            vim.keymap.set("n", "<leader>gc", ":Git commit<CR>")
+            vim.keymap.set("n", "<leader>gp", ":Git push<CR>")
+            vim.keymap.set("n", "<leader>gl", ":Git pull<CR>")
+            vim.keymap.set("n", "<leader>gd", ":Gdiff<CR>")
+            vim.keymap.set("n", "<leader>gb", ":Git blame<CR>")
+        end,
+    },
+
     -- Flog - Git plugin
     {
         "rbong/vim-flog",
