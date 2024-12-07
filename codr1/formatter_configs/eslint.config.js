@@ -1,4 +1,3 @@
-
 const js = require('@eslint/js');
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');

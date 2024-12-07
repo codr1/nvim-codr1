@@ -131,24 +131,6 @@ local plugins = {
         end,
     },
 
-    -- ChatGPT
-    {
-        "jackMort/ChatGPT.nvim",
-        event = "VeryLazy",
-        dependencies = {
-            "MunifTanjim/nui.nvim",
-            "nvim-lua/plenary.nvim",
-            "nvim-telescope/telescope.nvim",
-        },
-        config = function()
-            require("chatgpt").setup {
-                -- TODO: Figure out how to make LastPass CLI (lpass) stay logged in for a reasonable amount of time
-                -- api_key_cmd = "lpass show 7048876137383249588 --password",
-                api_key_cmd = "echo $OPENAI_API_KEY",
-            }
-        end,
-    },
-
     -- Claude.vimz
     {
         "pasky/claude.vim",
@@ -173,27 +155,53 @@ local plugins = {
         end,
     },
 
-    -- gp.nvim - collection of different LLMs
+    -- Avante - Cursor-like AI experince
     {
-        "robitx/gp.nvim",
+        "yetone/avante.nvim",
+        event = "VeryLazy",
         lazy = false,
-        config = function()
-            local conf = {
-                providers = {
-                    openai = {
-                        endpoint = "https://api.openai.com/v1/chat/completions",
-                        secret = os.getenv "OPENAI_API_KEY",
-                    },
-                    anthropic = {
-                        endpoint = "https://api.anthropic.com/v1/messages",
-                        secret = os.getenv "ANTHROPIC_API_KEY",
+        build = "make",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            "stevearc/dressing.nvim",
+            "nvim-lua/plenary.nvim",
+            "MunifTanjim/nui.nvim",
+            "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+            "zbirenbaum/copilot.lua", -- for providers='copilot'
+            {
+                -- support for image pasting
+                "HakonHarnes/img-clip.nvim",
+                event = "VeryLazy",
+                opts = {
+                    -- recommended settings
+                    default = {
+                        embed_image_as_base64 = false,
+                        prompt_for_file_name = false,
+                        drag_and_drop = {
+                            insert_mode = true,
+                        },
                     },
                 },
-            }
-            require("gp").setup(conf)
-
-            -- Setup shortcuts here (see Usage > Shortcuts in the Documentation/Readme)
-        end,
+            },
+            {
+                -- Make sure to set this up properly if you have lazy=true
+                "MeanderingProgrammer/render-markdown.nvim",
+                opts = {
+                    file_types = { "markdown", "Avante" },
+                },
+                ft = { "markdown", "Avante" },
+            },
+        },
+        opts = {
+            --- @alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
+            provider = "claude",
+            windows = {
+                sidebar_header = {
+                    align = "left",
+                    rounded = "true",
+                },
+            },
+        },
     },
 }
 return plugins
