@@ -18,6 +18,7 @@ local servers = {
     "jqls",
     "jsonls",
     "lua_ls",
+    "rust-analyzer",
     "sqls",
     "ts_ls",
 }
