@@ -1,3 +1,5 @@
+local nvlsp = require "nvchad.configs.lspconfig"
+
 local plugins = {
     {
         "vim-crystal/vim-crystal",
@@ -34,10 +36,6 @@ local plugins = {
             --    },
             --}
             conf.mapping = {
-                -- this little section is just for nvim.ai
-                --sources = cmp.config.sources {
-                --    { name = "nvimai_cmp_source" }, -- This is optional but recommended
-                --},
                 ["<Up>"] = cmp.mapping.select_prev_item(),
                 ["<Down>"] = cmp.mapping.select_next_item(),
                 ["<Enter>"] = cmp.mapping.confirm {
@@ -88,6 +86,41 @@ local plugins = {
         },
     },
 
+    -- Rust.vim - Official Rust vim plugin - used for format on save
+    {
+        "rust-lang/rust.vim",
+        ft = "rust",
+        init = function()
+            vim.g.rustfmt_autosave = 1
+        end,
+    },
+
+    --Rust-tools.nvim - Official set of tools for Rust, including LSP, Debug, etc.
+    {
+        "simrat39/rust-tools.nvim",
+        ft = "rust",
+        dependencies = "neovim/nvim-lspconfig",
+
+        opts = function()
+            local options = {
+                server = {
+                    on_attach = nvlsp.on_attach,
+                    capabilities = nvlsp.capabilities,
+                },
+            }
+            return options
+        end,
+
+        config = function(_, opts)
+            require("rust-tools").setup(opts)
+        end,
+    },
+
+    -- Rust debugger DAP
+    {
+        "mfussenegger/nvim-dap",
+    },
+
     -- remember.nvim - restore cursor position
     {
         "vladdoster/remember.nvim",
@@ -105,31 +138,6 @@ local plugins = {
 
     -- Custom cmp config to add arrow keymaps
     {},
-
-    -- nvim.ai
-    {
-        "magicalne/nvim.ai",
-        lazy = false,
-        dependencies = {
-            "nvim-lua/plenary.nvim",
-            "nvim-treesitter/nvim-treesitter",
-        },
-        config = function()
-            local api_key = os.getenv "ANTHROPIC_API_KEY"
-            local opts = {
-                provider = "anthropic", -- You can configure your provider, model or keymaps here.
-                anthropic = {
-                    max_tokens = 100000,
-                },
-                ANTHROPIC_API_KEY = api_key,
-                keymaps = {
-                    toggle = "<leader>ac", -- Toggle chat dialog
-                    inline_assist = "<leader>ai", -- Run InlineAssist command with prompt
-                },
-            }
-            require("ai").setup(opts)
-        end,
-    },
 
     -- Claude.vimz
     {
