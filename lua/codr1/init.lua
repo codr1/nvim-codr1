@@ -29,3 +29,5 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt.softtabstop = 4
     end,
 })
+
+require "codr1.debug"

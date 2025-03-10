@@ -1,14 +1,6 @@
 local nvlsp = require "nvchad.configs.lspconfig"
 
 local plugins = {
-    {
-        "vim-crystal/vim-crystal",
-        ft = "crystal",
-        lazy = true,
-        config = function(_)
-            vim.g.crystal_auto_format = 1
-        end,
-    },
 
     -- Mason is alrady inlcuded by NVChad.  However we want to add an ensure_installed clause so that
     -- it loads our favorite packages every time we pull this config on a new system, and we don't have
@@ -47,6 +39,32 @@ local plugins = {
         end,
     },
 
+    -- NVIM-DAP - core debugging plugin
+    {
+        "jay-babu/mason-nvim-dap.nvim",
+        config = function()
+            require("mason-nvim-dap").setup {
+                -- Enable automatic installation of debuggers for languages you need
+                automatic_installation = true,
+                -- Optionally, set up custom handlers if needed
+                handlers = {},
+            }
+        end,
+    },
+
+    -- Debug UI for nvim-dap
+    {
+        "rcarriga/nvim-dap-ui",
+        dependencies = { "nvim-neotest/nvim-nio" }, -- nvim-nio is required by nvim-dap-ui
+        config = function()
+            require("dapui").setup {
+                -- You can add custom configuration here if needed
+            }
+        end,
+        lazy = true,
+        cmd = { "DapUIToggle" },
+    },
+
     -- Glow - Markdown preview - https://github.com/ellisonleao/glow.nvim
     {
         "ellisonleao/glow.nvim",
@@ -61,6 +79,7 @@ local plugins = {
         end,
     },
 
+    -- Git integration with vim-fugitive
     {
         "tpope/vim-fugitive",
         event = "VeryLazy",
@@ -203,6 +222,11 @@ local plugins = {
         opts = {
             --- @alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
             provider = "claude",
+            auto_suggestions_provider = "claude",
+            claude = {
+                temperature = 0,
+                max_tokens = 8192,
+            },
             windows = {
                 sidebar_header = {
                     align = "left",
@@ -210,6 +234,20 @@ local plugins = {
                 },
             },
         },
+    },
+
+    -- Database plugin for interactive queries (vim-dadbod)
+    {
+        "tpope/vim-dadbod",
+        lazy = true,
+        cmd = { "DB", "DBUI" },
+    },
+
+    -- SQL auto-completion based on database schema (vim-dadbod-completion)
+    {
+        "kristijanhusak/vim-dadbod-completion",
+        lazy = true,
+        event = "InsertEnter",
     },
 }
 return plugins
