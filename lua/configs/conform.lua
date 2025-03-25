@@ -22,6 +22,7 @@ local options = {
             prepend_args = { "-style=file:~/.config/nvim/codr1/formatter_configs/.clang-format" },
         },
         eslint_d = {
+            timeout = 20000,
             prepend_args = {
                 "--config",
                 vim.fn.expand "~/.config/nvim/codr1/formatter_configs/eslint.config.js",

@@ -2,6 +2,33 @@ local nvlsp = require "nvchad.configs.lspconfig"
 
 local plugins = {
 
+    {
+        "ojroques/nvim-osc52",
+        lazy = false,
+        config = function()
+            local osc52 = require "osc52"
+
+            osc52.setup {
+                max_length = 0, -- Maximum length of selection (0 for no limit)
+                silent = false, -- Disable message when copied
+                trim = false, -- Trim surrounding whitespaces before copy
+            }
+
+            -- Override vim's clipboard to use OSC52
+            vim.api.nvim_create_autocmd("TextYankPost", {
+                callback = function()
+                    -- When yanking, automatically copy to clipboard
+                    if vim.v.event.operator == "y" then
+                        osc52.copy_register '"'
+                    end
+                end,
+            })
+
+            -- Connect the system clipboard to Neovim
+            vim.opt.clipboard = "unnamedplus"
+        end,
+    },
+
     -- Mason is alrady inlcuded by NVChad.  However we want to add an ensure_installed clause so that
     -- it loads our favorite packages every time we pull this config on a new system, and we don't have
     -- to walk through the tUI by hand to install them
@@ -52,7 +79,7 @@ local plugins = {
         end,
     },
 
-    -- Debug UI for nvim-dap
+    -- Debug UI for nvim-dap,
     {
         "rcarriga/nvim-dap-ui",
         dependencies = { "nvim-neotest/nvim-nio" }, -- nvim-nio is required by nvim-dap-ui
