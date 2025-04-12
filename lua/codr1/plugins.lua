@@ -248,12 +248,47 @@ local plugins = {
         },
         opts = {
             --- @alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
+            --- 1. Set Anthropic Claude as the AI provider (for both main and suggestions)
             provider = "claude",
             auto_suggestions_provider = "claude",
+            --(NOTE: Using Claude for high-frequency auto suggestions is expensive)
+
+            -- 2. Anthropic API settings
             claude = {
+                timeout = 60000,
                 temperature = 0,
-                max_tokens = 8192,
+                --temperature = 1, -- temperature may only be set to 1 when thinking is enabled.
+                max_tokens = 64000,
+                -- thinking = {
+                --     type = "enabled",
+                --     budget_tokens = 16000,
+                -- },
             },
+
+            features = {
+                web_search = true,
+                project_context = true,
+                file_search = true,
+            },
+
+            web_search_engine = {
+                provider = "tavily",
+                api_key = os.getenv "TAVILY_API_KEY",
+
+                -- Additional settings:
+                max_results = 5, -- Number of search results to retrieve (default: 5)
+                include_answer = true, -- Include Tavily's summarized answer (default: true)
+                include_images = false, -- Include images in search results (default: false)
+                search_depth = "advanced", -- "basic" or "advanced" search depth (default: "basic")
+                include_domains = {}, -- Array of domains to prioritize in search results
+                exclude_domains = {}, -- Array of domains to exclude from search results
+                timeout = 15000, -- Timeout in milliseconds (default: 15000)
+
+                -- For specialized searches:
+                search_type = "search", -- Can be "search" or "passage" (default: "search")
+                search_bm25 = false, -- Enable BM25 vector search (default: false)
+            },
+
             windows = {
                 sidebar_header = {
                     align = "left",
