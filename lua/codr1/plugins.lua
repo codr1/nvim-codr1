@@ -223,8 +223,7 @@ local plugins = {
             "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
             "zbirenbaum/copilot.lua", -- for providers='copilot'
             {
-                -- support for image pasting
-                "HakonHarnes/img-clip.nvim",
+                "HakonHarnes/img-clip.nvim", -- support for image pasting
                 event = "VeryLazy",
                 opts = {
                     -- recommended settings
@@ -240,9 +239,7 @@ local plugins = {
             {
                 -- Make sure to set this up properly if you have lazy=true
                 "MeanderingProgrammer/render-markdown.nvim",
-                opts = {
-                    file_types = { "markdown", "Avante" },
-                },
+                opts = { file_types = { "markdown", "Avante" } },
                 ft = { "markdown", "Avante" },
             },
         },
@@ -256,21 +253,43 @@ local plugins = {
             -- 2. Anthropic API settings
             claude = {
                 timeout = 60000,
-                temperature = 0,
-                --temperature = 1, -- temperature may only be set to 1 when thinking is enabled.
+                -- temperature = 0,
+                temperature = 1, -- temperature may only be set to 1 when thinking is enabled.
                 max_tokens = 64000,
-                -- thinking = {
-                --     type = "enabled",
-                --     budget_tokens = 16000,
-                -- },
+                thinking = { type = "enabled", budget_tokens = 16000 },
+                disable_tools = false,
             },
 
+            -- Features Section
             features = {
                 web_search = true,
                 project_context = true,
                 file_search = true,
             },
 
+            --- Behaviour Tuning
+            behaviour = {
+                auto_suggestions = false, -- only on demand :contentReference[oaicite:10]{index=10}
+                auto_focus_sidebar = true, -- jump into pane for review :contentReference[oaicite:11]{index=11}
+                auto_apply_diff_after_generation = false, -- manual diff approval :contentReference[oaicite:12]{index=12}
+                enable_token_counting = true, -- see real-time usage
+                cursor_planning_mode = true, -- plan-apply workflow
+                minimize_diff = false, -- full context diffs :contentReference[oaicite:13]{index=13}
+            },
+
+            -- Tools Configuration
+            tools = {
+                disabled_tools = { "git_commit" },
+                web_search = { provider = "tavily", max_results = 5, include_answer = true, timeout = 15000 },
+                rag_service = {
+                    enabled = true,
+                    provider = "claude",
+                    llm_model = "claude-3-7-sonnet",
+                    embed_model = "nomic-embed-text",
+                    host_mount = vim.env.HOME,
+                },
+                mcp = { enabled = true },
+            },
             web_search_engine = {
                 provider = "tavily",
                 api_key = os.getenv "TAVILY_API_KEY",
@@ -283,10 +302,16 @@ local plugins = {
                 include_domains = {}, -- Array of domains to prioritize in search results
                 exclude_domains = {}, -- Array of domains to exclude from search results
                 timeout = 15000, -- Timeout in milliseconds (default: 15000)
-
                 -- For specialized searches:
                 search_type = "search", -- Can be "search" or "passage" (default: "search")
                 search_bm25 = false, -- Enable BM25 vector search (default: false)
+            },
+
+            -- Persistent History
+            history = {
+                storage_path = vim.fn.stdpath "state" .. "/avante",
+                max_tokens = 8192,
+                carried_entry_count = 10,
             },
 
             windows = {
