@@ -19,6 +19,7 @@ local servers = {
     "jsonls",
     "lua_ls",
     "sqls",
+    "templ",
     "ts_ls",
 }
 

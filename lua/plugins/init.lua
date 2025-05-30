@@ -23,6 +23,7 @@ local plugins = {
                 "vimdoc",
                 "html",
                 "css",
+                "templ",
             },
         },
     },

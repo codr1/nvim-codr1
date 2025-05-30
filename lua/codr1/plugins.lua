@@ -34,6 +34,13 @@ local plugins = {
     -- to walk through the tUI by hand to install them
     {
         "williamboman/mason.nvim",
+        ensure_installed = {
+            "codelldb",
+            "gopls",
+            "templ",
+            "eslint_d",
+            "typescript_language_server",
+        },
         opts = {
             -- Serves that are set up via lspconfig should be automatically installed
             automatic_installation = true,
@@ -185,30 +192,6 @@ local plugins = {
     -- Custom cmp config to add arrow keymaps
     {},
 
-    -- Claude.vimz
-    {
-        "pasky/claude.vim",
-        lazy = false,
-        config = function()
-            -- Load API key from environment variable
-            local api_key = os.getenv "ANTHROPIC_API_KEY"
-            if api_key then
-                vim.g.claude_api_key = api_key
-            else
-                vim.notify("ANTHROPIC_API_KEY environment variable is not set", vim.log.levels.WARN)
-            end
-
-            -- Add keymaps
-            vim.keymap.set("v", "<leader>Ci", ":'<,'>ClaudeImplement ", { noremap = true, desc = "Claude Implement" })
-            vim.keymap.set(
-                "n",
-                "<leader>Cc",
-                ":ClaudeChat<CR>",
-                { noremap = true, silent = true, desc = "Claude Chat" }
-            )
-        end,
-    },
-
     -- Avante - Cursor-like AI experince
     {
         "yetone/avante.nvim",
@@ -244,6 +227,7 @@ local plugins = {
             },
         },
         opts = {
+            mode = "legacy",
             --- @alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
             --- 1. Set Anthropic Claude as the AI provider (for both main and suggestions)
             provider = "claude",
@@ -258,6 +242,14 @@ local plugins = {
                 max_tokens = 64000,
                 thinking = { type = "enabled", budget_tokens = 16000 },
                 disable_tools = false,
+                model = "claude-sonnet-4-20250514", -- Using Claude 4 specifically.
+            },
+
+            -- 3. Gemini API settings - optimized for maximum performance in 2025
+            gemini = {
+                timeout = 120000, -- Extended timeout for complex operations
+                model = "gemini-2.5-pro-preview-05-06", -- Latest Gemini model as of 2025
+                temperature = 1.0, -- Maximum creative capability
             },
 
             -- Features Section
@@ -269,12 +261,12 @@ local plugins = {
 
             --- Behaviour Tuning
             behaviour = {
-                auto_suggestions = false, -- only on demand :contentReference[oaicite:10]{index=10}
-                auto_focus_sidebar = true, -- jump into pane for review :contentReference[oaicite:11]{index=11}
-                auto_apply_diff_after_generation = false, -- manual diff approval :contentReference[oaicite:12]{index=12}
+                auto_suggestions = false, -- only on demand
+                auto_focus_sidebar = true, -- jump into pane for review
+                auto_apply_diff_after_generation = false, -- manual diff approval
                 enable_token_counting = true, -- see real-time usage
                 cursor_planning_mode = true, -- plan-apply workflow
-                minimize_diff = false, -- full context diffs :contentReference[oaicite:13]{index=13}
+                minimize_diff = false, -- do full context diffs
             },
 
             -- Tools Configuration
@@ -284,9 +276,21 @@ local plugins = {
                 rag_service = {
                     enabled = true,
                     provider = "claude",
-                    llm_model = "claude-3-7-sonnet",
+                    llm_model = "claude-sonnet-4",
                     embed_model = "nomic-embed-text",
                     host_mount = vim.env.HOME,
+                },
+                -- Alternative Gemini RAG configuration (disabled by default)
+                -- To use, change the provider in rag_service to "gemini"
+                gemini_rag = {
+                    provider = "gemini",
+                    llm_model = "gemini-2.5-pro-preview-05-06",
+                    embed_model = "vertex-embed-text-2", -- Latest Google embedding model as of 2025
+                    chunk_size = 4096, -- Enhanced chunk size for better context retention
+                    chunk_overlap = 512, -- Increased overlap for improved context coherence
+                    hybrid_search = true, -- Enables both semantic and keyword search
+                    reranking = true, -- Post-processing to improve result relevance
+                    max_sources = 15, -- Increased source limit for more comprehensive context
                 },
                 mcp = { enabled = true },
             },
