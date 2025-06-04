@@ -34,14 +34,31 @@ local plugins = {
     -- to walk through the tUI by hand to install them
     {
         "williamboman/mason.nvim",
-        ensure_installed = {
-            "codelldb",
-            "gopls",
-            "templ",
-            "eslint_d",
-            "typescript_language_server",
-        },
         opts = {
+            ensure_installed = {
+                "bash-language-server",
+                "black",
+                "clangd",
+                "codelldb",
+                "css-lsp",
+                "eslint_d",
+                "go-debug-adapter",
+                "goimports-reviser",
+                "golines",
+                "gopls",
+                "html-lsp",
+                "htmx-lsp",
+                "isort",
+                "jq-lsp",
+                "json-lsp",
+                "lua-language-server",
+                "prettier",
+                "python-lsp-server",
+                "sqls",
+                "stylua",
+                "templ",
+                "typescript-language-server",
+            },
             -- Serves that are set up via lspconfig should be automatically installed
             automatic_installation = true,
         },
@@ -104,11 +121,9 @@ local plugins = {
         "ellisonleao/glow.nvim",
         cmd = "Glow",
         config = function()
-            local conf = {
-                -- add any override config
-                require("glow").setup {
-                    width = 120,
-                },
+            -- add any override config
+            require("glow").setup {
+                width = 120,
             }
         end,
     },
@@ -233,23 +248,28 @@ local plugins = {
             provider = "claude",
             auto_suggestions_provider = "claude",
             --(NOTE: Using Claude for high-frequency auto suggestions is expensive)
+            providers = {
+                -- 2. Anthropic API settings
+                claude = {
+                    timeout = 60000,
+                    extra_request_body = {
+                        -- temperature = 0,
+                        temperature = 1, -- temperature may only be set to 1 when thinking is enabled.
+                        max_tokens = 64000,
+                    },
+                    thinking = { type = "enabled", budget_tokens = 16000 },
+                    disable_tools = false,
+                    model = "claude-sonnet-4-20250514", -- Using Claude 4 specifically.
+                },
 
-            -- 2. Anthropic API settings
-            claude = {
-                timeout = 60000,
-                -- temperature = 0,
-                temperature = 1, -- temperature may only be set to 1 when thinking is enabled.
-                max_tokens = 64000,
-                thinking = { type = "enabled", budget_tokens = 16000 },
-                disable_tools = false,
-                model = "claude-sonnet-4-20250514", -- Using Claude 4 specifically.
-            },
-
-            -- 3. Gemini API settings - optimized for maximum performance in 2025
-            gemini = {
-                timeout = 120000, -- Extended timeout for complex operations
-                model = "gemini-2.5-pro-preview-05-06", -- Latest Gemini model as of 2025
-                temperature = 1.0, -- Maximum creative capability
+                -- 3. Gemini API settings - optimized for maximum performance in 2025
+                gemini = {
+                    timeout = 120000, -- Extended timeout for complex operations
+                    model = "gemini-2.5-pro-preview-05-06", -- Latest Gemini model as of 2025
+                    extra_request_body = {
+                        temperature = 1.0, -- Maximum creative capability
+                    },
+                },
             },
 
             -- Features Section
@@ -321,7 +341,7 @@ local plugins = {
             windows = {
                 sidebar_header = {
                     align = "left",
-                    rounded = "true",
+                    rounded = true,
                 },
             },
         },
