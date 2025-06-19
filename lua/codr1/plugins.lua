@@ -242,7 +242,7 @@ local plugins = {
             },
         },
         opts = {
-            mode = "legacy",
+            -- mode = "legacy",
             --- @alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
             --- 1. Set Anthropic Claude as the AI provider (for both main and suggestions)
             provider = "claude",
@@ -335,7 +335,7 @@ local plugins = {
             history = {
                 storage_path = vim.fn.stdpath "state" .. "/avante",
                 max_tokens = 8192,
-                carried_entry_count = 10,
+                carried_entry_count = 9,
             },
 
             windows = {
