@@ -207,6 +207,69 @@ local plugins = {
     -- Custom cmp config to add arrow keymaps
     {},
 
+    -- Custom Telescope confg to move git commits: <leader>cm -> <leader>cg
+    {
+        "nvim-telescope/telescope.nvim",
+        optional = true,
+        init = function()
+            -- run after NVChad sets defaults so we can safely override
+            vim.api.nvim_create_autocmd("VimEnter", {
+                once = true,
+                callback = function()
+                    pcall(vim.keymap.del, "n", "<leader>cm") -- free <leader>cm
+                    vim.keymap.set("n", "<leader>cg", "<cmd>Telescope git_commits<cr>", {
+                        desc = "Git commits (Telescope)",
+                        silent = true,
+                    })
+                end,
+            })
+        end,
+    },
+
+    -- Claudecode.nvim
+    {
+        "coder/claudecode.nvim",
+        dependencies = { "folke/snacks.nvim" },
+        lazy = false,
+        -- If you installed via native installer or npm and `which claude` works,
+        -- you can omit `opts`. If you used the local installer path, set terminal_cmd.
+        -- opts = { terminal_cmd = "~/.claude/local/claude" },
+        config = function()
+            require("claudecode").setup {
+                -- optional tweaks
+                terminal = {
+                    split_side = "right",
+                    split_width_percentage = 0.30,
+                    provider = "snacks",
+                    snacks_win_opts = {
+                        position = "float",
+                        width = 0.9,
+                        height = 0.9,
+                        border = "rounded",
+                    },
+                },
+                focus_after_send = true,
+                track_selection = true,
+                log_level = "info",
+            }
+            -- Keymaps (normal + visual)
+            vim.keymap.set({ "n", "x" }, "<leader>cc", "<cmd>ClaudeCode<cr>", { desc = "Claude: Toggle" })
+            vim.keymap.set({ "n", "x" }, "<leader>cf", "<cmd>ClaudeCodeFocus<cr>", { desc = "Claude: Focus" })
+            vim.keymap.set({ "n", "x" }, "<leader>cr", "<cmd>ClaudeCode --resume<cr>", { desc = "Claude: Resume" })
+            vim.keymap.set("n", "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", { desc = "Claude: Select Model" })
+            vim.keymap.set("n", "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", { desc = "Claude: Add current buffer" })
+            vim.keymap.set("x", "<leader>cs", "<cmd>ClaudeCodeSend<cr>", { desc = "Claude: Send selection" })
+            -- Diffs
+            vim.keymap.set(
+                "n",
+                "<leader>ct",
+                "<cmd>ClaudeCodeDiffAccept<cr>",
+                { desc = "Claude: Accept diff - Take Theirs" }
+            )
+            vim.keymap.set("n", "<leader>co", "<cmd>ClaudeCodeDiffDeny<cr>", { desc = "Claude: Deny diff - Take Ours" })
+        end,
+    },
+
     -- Avante - Cursor-like AI experince
     {
         "yetone/avante.nvim",
