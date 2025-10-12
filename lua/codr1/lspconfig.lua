@@ -5,9 +5,6 @@ local on_attach = nvlsp.on_attach
 local on_init = nvlsp.on_init
 local capabilities = nvlsp.capabilities
 
-local lspconfig = require "lspconfig"
-local util = require "lspconfig/util"
-
 -- EXAMPLE
 local servers = {
     "bashls",
@@ -25,34 +22,41 @@ local servers = {
 
 -- lsps with default config
 for _, lsp in ipairs(servers) do
-    lspconfig[lsp].setup {
+    vim.lsp.config(lsp, {
         on_attach = nvlsp.on_attach,
         on_init = nvlsp.on_init,
         capabilities = nvlsp.capabilities,
-    }
+    })
+    vim.lsp.enable(lsp)
 end
 
 -- Custom setup for gopls
-lspconfig.gopls.setup {
+vim.lsp.config("gopls", {
     on_attach = nvlsp.on_attach,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
     cmd = { "gopls" },
-    filetypes = { "go", "gomod", "gowork", ".git" },
-    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    filetypes = { "go", "gomod", "gowork" },
+    root_dir = function(fname)
+        -- Use vim.fs.find to locate the root directory
+        local markers = { "go.work", "go.mod", ".git" }
+        local root = vim.fs.root(fname, markers)
+        return root or vim.loop.cwd()
+    end,
     settings = {
         gopls = {
             completeUnimported = true,
             usePlaceholders = true,
             analyses = {
-                unusedparam = true,
+                unusedparams = true, -- correct spelling
             },
         },
     },
-}
+})
+vim.lsp.enable "gopls"
 
 -- Custom setup for pylsp
-lspconfig.pylsp.setup {
+vim.lsp.config("pylsp", {
     on_attach = nvlsp.on_attach,
     on_init = nvlsp.on_init,
     capabilities = nvlsp.capabilities,
@@ -65,11 +69,13 @@ lspconfig.pylsp.setup {
             },
         },
     },
-}
+})
+vim.lsp.enable "pylsp"
 
 -- configuring single server, example: typescript
--- lspconfig.ts_ls.setup {
+-- vim.lsp.config("ts_ls", {
 --   on_attach = nvlsp.on_attach,
 --   on_init = nvlsp.on_init,
 --   capabilities = nvlsp.capabilities,
--- }
+-- })
+-- vim.lsp.enable("ts_ls")
